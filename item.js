@@ -1,52 +1,54 @@
 class ItemFood {
-    constructor(name, amount, price) {
+    constructor(name, amount, price, id) {
         this.name = name;
         this.amount = amount;
         this.price = price;
+        this.id = id;
     }
 
-    getSum()
-    {
-      return this.amount * this.price;  
+    getSum() {
+        return this.amount * this.price;
     }
 }
 
 function getDate() {
-    let date = new Date();
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-
-    let currentDate = "Paragon" + " " + `${day}-${month}-${year}`;
+    const date = new Date();
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const currentDate = `Paragon ${day}-${month}-${year}`;
     document.getElementById("drugi").textContent = currentDate;
 }
 
 let Arrayx = [];
 let index = 0;
 
+function PopulateTable(x) {
+    const newtr = document.createElement("tr");
+    const tableBody = document.getElementById("Góra");
 
-function PopulateTable(x) 
-{
-    let newtr = document.createElement("tr");
-    let oldtr = document.getElementById("Góra");
-    let newtdlp = document.createElement("td");
-    let newtdname = document.createElement("td");
-    let newtdamount = document.createElement("td");
-    let newtdprice = document.createElement("td");
-    let newtdsum = document.createElement("td");
-    let editbutton = document.createElement("button");
-    let deletebutton = document.createElement("button");
+    const newtdlp = document.createElement("td");
+    const newtdname = document.createElement("td");
+    const newtdamount = document.createElement("td");
+    const newtdprice = document.createElement("td");
+    const newtdsum = document.createElement("td");
+    const editbutton = document.createElement("button");
+    const deletebutton = document.createElement("button");
+
+    x.id = index; 
     newtdlp.textContent = index;
     newtdname.textContent = x.name;
     newtdamount.textContent = x.amount;
     newtdprice.textContent = `${x.price}zł`;
-    newtdsum.textContent = `${x.price * x.amount}zł`;
-    editbutton.textContent="Edytuj";
+    newtdsum.textContent = `${x.getSum()}zł`;
+
+    editbutton.textContent = "Edytuj";
     editbutton.classList.add("my-button");
-    editbutton.addEventListener("click", () => EditButtonOnClick(x.name));
-    deletebutton.textContent="Usuń";
+    editbutton.addEventListener("click", () => EditButtonOnClick(x.id));
+
+    deletebutton.textContent = "Usuń";
     deletebutton.classList.add("my-button");
-    deletebutton.addEventListener("click",() => DeleteButtonOnClick(x.name));
+    deletebutton.addEventListener("click", () => DeleteButtonOnClick(x.id));
 
     newtr.appendChild(newtdlp);
     newtr.appendChild(newtdname);
@@ -55,90 +57,110 @@ function PopulateTable(x)
     newtr.appendChild(newtdsum);
     newtr.appendChild(editbutton);
     newtr.appendChild(deletebutton);
-    oldtr.appendChild(newtr);
 
- index++;
-    
+    tableBody.appendChild(newtr);
+
+    index++;
+    PopulateFinalSum();
 }
 
 function PopulateFinalSum() {
-
-    let count = 0;
-    Arrayx.forEach(ItemFood => count = count + ItemFood.price * ItemFood.amount);
-    let el = document.getElementById("fsum");
-    el.textContent = `Suma: ${count}zł`;
-
+    const totalSum = Arrayx.reduce((sum, item) => sum + item.getSum(), 0);
+    const el = document.getElementById("fsum");
+    el.textContent = `Suma: ${totalSum}zł`;
 }
-
 
 function CreateButton() {
+    const el = document.getElementById("drugi");
+    const createbutton = document.createElement("button");
+    createbutton.textContent = "Dodaj nowy produkt";
+    createbutton.classList.add("my-button");
+
+    createbutton.addEventListener("click", () => {
+        const dialog = document.querySelector("dialog");
+        if (dialog) dialog.showModal();
+    });
+
+    el.appendChild(createbutton);
+}
+
+function EditButtonOnClick(id) {
+    console.log(`Editing item with ID: ${id}`);
+}
+
+function DeleteButtonOnClick(id) {
+   
+    Arrayx = Arrayx.filter(item => item.id !== id);
+
     
-let el = document.getElementById("fsum");
-let createbutton = document.createElement("button"); 
-let br = document.createElement("br");
-el.appendChild(br);
-createbutton.textContent="Dodaj nowy produkt";
-createbutton.classList.add("my-button");
-el.appendChild(createbutton);
-createbutton.addEventListener("click", () => {
-    let dialog = document.querySelector("dialog");
-    if (dialog) dialog.showModal(); 
+    Arrayx.forEach((item, i) => item.id = i);
+    index = 0;
+
+    MassivePopulateTable();
+  
+    
+}
+
+function MassivePopulateTable() {
+    const tableBody = document.getElementById("Góra");
+
+  
+    tableBody.innerHTML = `
+        <tr>
+            <th id="1">LP</th>
+            <th id="2">NAZWA</th>
+            <th id="3">ILOŚĆ</th>
+            <th id="4">CENA</th>
+            <th id="5">SUMA</th>
+        </tr>`;
+
+  
+    Arrayx.forEach(item => PopulateTable(item));
+
+  
+    PopulateFinalSum();
+}
+
+function InitializePage() {
+  
+    getDate();
+    CreateButton();
+
+    const Czekolada = new ItemFood('Czekolada', 10, 30);
+    const Śmietana = new ItemFood('Śmietana', 100, 500);
+    Arrayx.push(Czekolada, Śmietana);
+
+    MassivePopulateTable();
+}
+
+document.getElementById('MyForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+
+    const newItem = new ItemFood(
+        formData.get("named"),
+        parseInt(formData.get("amountd"), 10),
+        parseFloat(formData.get("priced"))
+    );
+
+    Arrayx.push(newItem);
+    PopulateTable(newItem);
+
+ 
+    const dialog = document.querySelector("dialog");
+    if (dialog) dialog.close();
 });
 
-}
 
-function EditButtonOnClick(index) {
-    console.log("editing" + index);
-}
-
-
-function DeleteButtonOnClick(index) {
-    console.log("delete" + index);
-}
-
-let Czekolada = new ItemFood('Czekolada', 10, 30);
-let Śmietana = new ItemFood('Śmietana', 100, 500);
-Arrayx.push(Czekolada);
-Arrayx.push(Śmietana);
-console.log(Arrayx);
-Arrayx.forEach(ItemFood =>PopulateTable(ItemFood))
-PopulateFinalSum();
-CreateButton();
-
-
-let dialog = document.querySelector("dialog");
-
-let closeButton = document.querySelector("dialog button");
-
+const dialog = document.querySelector("dialog");
+const closeButton = document.querySelector("dialog button");
 closeButton.classList.add("my-button");
-closeButton.textContent="Anuluj";
+closeButton.textContent = "Anuluj";
 closeButton.addEventListener("click", () => {
-  dialog.close();
+    if (dialog) dialog.close();
 });
 
 
-
-let FormResult = document.getElementById('MyForm').addEventListener('submit', function(event) {
-event.preventDefault();
-
-let formData = new FormData(this);
-let formObject = {};
-formData.forEach(function(value, key) {
-    formObject[key] = value;
-    handleFormSubmit(formObject);
-});
-
-function handleFormSubmit(data) {
-    console.log('Form Data: ', data);
-}
-
-let Rzecz = new ItemFood (formData.name, formData.amount, formData.price);
-Arrayx.push(Rzecz);
-PopulateTable(Rzecz);
-PopulateFinalSum();
-
-});
-
-
-window.onload = getDate();
+InitializePage();
 
