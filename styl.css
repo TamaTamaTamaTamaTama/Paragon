@@ -1,0 +1,31 @@
+table {
+    border-collapse: separate; 
+    border-spacing: 3em;
+    border: 1px solid;
+ 
+  }
+
+  .header img {
+    float: left;
+    width: 100px;
+    height: 100px;
+    background: #555;
+  }
+  
+  .header h1 {
+    position: relative;
+    top: 18px;
+    left: 10px;
+  }
+
+  .my-button {
+    background-color: white;
+    color: black;
+    width: 120px;
+    
+
+  }
+  .my-button:hover {
+    background-color: #555;
+    color: white;
+  }

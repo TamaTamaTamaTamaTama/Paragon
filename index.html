@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="styl.css">
+
+    <title>Paragon</title>
+</head>
+
+<body>
+<div class="header">
+<img src="kasa.jpg" alt="Logo sklepu" width = 10%, height = 10%> 
+<h1 id="drugi">PARAGON</h1> 
+</div> <br>
+
+<table id="Góra">
+    <tr >
+        <th id="1">LP</th>
+        <th id="2">NAZWA</th>
+        <th id="3">ILOŚĆ</th>
+        <th id="4">CENA</th>
+        <th id="5">SUMA</th>
+    </tr>
+</table>
+
+<h2 id="fsum">Suma:</h2>
+
+
+<dialog>
+    <button autofocus>Close</button>
+    <form id="MyForm">
+            <p>Nazwa:<input type="text" name="named" /> </p>
+            <p>   Ilość:<input type="number" name="amountd" min = "1"/></p>
+            <p>    Cena:<input type="number" name="priced" min = "1"/></p>
+    
+        <p><input type="submit" value = "Stwórz" class = my-button></p>
+    </form>
+  </dialog>
+  
+
+
+
+<script src="item.js"></script>
+</body>
+
+
+</html>
